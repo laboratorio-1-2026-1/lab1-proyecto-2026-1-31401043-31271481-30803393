@@ -1,0 +1,6 @@
+# Ignora las librerias instaladas
+.venv/
+# Ignora los __pycache__ que se crean 
+__pycache__/
+# Evita que las variables de entorno sean publicas
+*.env
