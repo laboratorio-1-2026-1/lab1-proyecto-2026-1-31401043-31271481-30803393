@@ -9,6 +9,7 @@ from app.middlewares.logging_middleware import LoggingMiddleware
 from app.routers import (
     auth_router,
     rol_router,
+    usuario_router
 )
 
 @asynccontextmanager
@@ -47,3 +48,4 @@ setup_exception_handlers(app)
 # Configurar Routers
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(rol_router.router, prefix="/api/v1/roles", tags=["Roles"])
+app.include_router(usuario_router.router, prefix="/api/v1/usuarios", tags=["Usuarios"])
