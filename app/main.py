@@ -13,7 +13,8 @@ from app.routers import (
     cliente_router,
     entrenador_router,
     categoria_maquina_router,
-    zona_router
+    zona_router,
+    maquina_router
 )
 
 @asynccontextmanager
@@ -57,3 +58,4 @@ app.include_router(cliente_router.router, prefix="/api/v1/clientes", tags=["Clie
 app.include_router(entrenador_router.router, prefix="/api/v1/entrenadores", tags=["Entrenadores"])
 app.include_router(categoria_maquina_router.router, prefix="/api/v1/categoria-maquinas", tags=["Categoría Maquinas"])
 app.include_router(zona_router.router, prefix="/api/v1/zonas", tags=["Zonas"])
+app.include_router(maquina_router.router, prefix="/api/v1/maquinas", tags=["Máquinas"])
