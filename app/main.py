@@ -10,7 +10,8 @@ from app.routers import (
     auth_router,
     rol_router,
     usuario_router,
-    cliente_router
+    cliente_router,
+    entrenador_router
 )
 
 @asynccontextmanager
@@ -51,3 +52,4 @@ app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(rol_router.router, prefix="/api/v1/roles", tags=["Roles"])
 app.include_router(usuario_router.router, prefix="/api/v1/usuarios", tags=["Usuarios"])
 app.include_router(cliente_router.router, prefix="/api/v1/clientes", tags=["Clientes"])
+app.include_router(entrenador_router.router, prefix="/api/v1/entrenadores", tags=["Entrenadores"])
