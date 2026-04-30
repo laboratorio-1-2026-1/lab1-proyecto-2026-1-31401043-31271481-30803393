@@ -14,7 +14,8 @@ from app.routers import (
     entrenador_router,
     categoria_maquina_router,
     zona_router,
-    maquina_router
+    maquina_router,
+    mantenimiento_router
 )
 
 @asynccontextmanager
@@ -59,3 +60,4 @@ app.include_router(entrenador_router.router, prefix="/api/v1/entrenadores", tags
 app.include_router(categoria_maquina_router.router, prefix="/api/v1/categoria-maquinas", tags=["Categoría Maquinas"])
 app.include_router(zona_router.router, prefix="/api/v1/zonas", tags=["Zonas"])
 app.include_router(maquina_router.router, prefix="/api/v1/maquinas", tags=["Máquinas"])
+app.include_router(mantenimiento_router.router, prefix="/api/v1/mantenimiento", tags=["Mantenimiento"])

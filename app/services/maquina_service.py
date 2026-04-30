@@ -47,6 +47,10 @@ class MaquinaService:
             if self.repo.activar_maquina(id):
                 raise BusinessRuleException(detail="No se puede activar la máquina porque tiene un ticket de mantenimiento abierto", error_code="MAQUINA_TICKET_ABIERTO")
             
+        if schema.estado_operativo == TipoEstadoMaquina.fuera_de_servicio:
+            if self.repo.activar_maquina(id):
+                raise BusinessRuleException(detail="No se puede dar de baja la máquina porque tiene el ticket de mantenimiento abierto", error_code="MAQUINA_TICKET_ABIERTO")
+                                            
         if schema.estado_operativo == TipoEstadoMaquina.en_mantenimiento:
             # Solo la creacion del ticket de mantenimiento puede poner la máquina en mantenimiento, 
             # por lo que se valida que el nuevo estado sea diferente al actual para evitar db call innecesario
