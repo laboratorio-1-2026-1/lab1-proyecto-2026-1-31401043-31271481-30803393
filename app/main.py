@@ -16,7 +16,8 @@ from app.routers import (
     zona_router,
     maquina_router,
     mantenimiento_router,
-    disciplina_router
+    disciplina_router,
+    sesion_router
 )
 
 @asynccontextmanager
@@ -63,3 +64,4 @@ app.include_router(zona_router.router, prefix="/api/v1/zonas", tags=["Zonas"])
 app.include_router(maquina_router.router, prefix="/api/v1/maquinas", tags=["Máquinas"])
 app.include_router(mantenimiento_router.router, prefix="/api/v1/mantenimiento", tags=["Mantenimiento"])
 app.include_router(disciplina_router.router, prefix="/api/v1/disciplinas", tags=["Disciplinas"])
+app.include_router(sesion_router.router, prefix="/api/v1/sesiones", tags=["Sesiones"])
