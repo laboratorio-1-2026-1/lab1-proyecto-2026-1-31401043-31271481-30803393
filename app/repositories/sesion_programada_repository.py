@@ -38,6 +38,13 @@ class SesionProgramadaRepository(BaseRepository[SesionProgramada]):
             query = query.where(SesionProgramada.id != excluir_id)
         result = await self.db.execute(query)
         return result.scalars().first() is not None
+    
+    #verficar si exiten sesiones programadas con un id de de zona en particuclar
+    async def existe_sesion_programada_zona(self, zona_id: int) -> bool:
+        query = select(SesionProgramada).where(SesionProgramada.zona_id == zona_id,
+                                                SesionProgramada.estado_sesion == TipoEstado.programada)
+        result = await self.db.execute(query)
+        return result.scalars().first() is not None
 
     async def existe_solapamiento_zona(
         self,

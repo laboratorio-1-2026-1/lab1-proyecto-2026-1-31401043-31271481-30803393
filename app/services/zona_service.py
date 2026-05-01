@@ -1,13 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.errors import AppException, NotFoundException
-from app.models.zona_instalacion import ZonaInstalacion
+from app.core.errors import AppException, BusinessRuleException, NotFoundException
+from app.models.zona_instalacion import ZonaInstalacion , TipoEstado
+from app.repositories.sesion_programada_repository import SesionProgramadaRepository
 from app.repositories.zona_instalacion import ZonaInstalacionRepository
 from app.schemas.zona import ZonaCreate, ZonaUpdateEstado
 
 class ZonaService:
     def __init__(self, db: AsyncSession):
         self.repo = ZonaInstalacionRepository(db)
+        self.sesion_repo = SesionProgramadaRepository(db)
 
     async def create_zona(self, schema: ZonaCreate) -> ZonaInstalacion:
         # Verificar si la zona ya existe por nombre
@@ -27,6 +29,13 @@ class ZonaService:
         zona = await self.repo.get_by_id(id)
         if not zona:
             raise NotFoundException(detail="Zona no encontrada", error_code="ZONA_NOT_FOUND")
+        
+        if await self.sesion_repo.existe_sesion_programada_zona(id):
+            if schema.estado_zona == TipoEstado.inactiva or schema.estado_zona == TipoEstado.cerrada or schema.estado_zona == TipoEstado.mantenimiento:
+                raise BusinessRuleException(
+                    detail="No se puede cambiar el estado de la zona porque tiene sesiones programadas",
+                    error_code="ZONA_SESIONES_PROGRAMADAS"
+                )
         
         # Validar si el estado de la zona actual es igual al nuevo para evitar db call innecesario
         # o alguna otra validación de negocio específica aquí
