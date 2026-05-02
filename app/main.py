@@ -18,7 +18,8 @@ from app.routers import (
     mantenimiento_router,
     disciplina_router,
     sesion_router,
-    reserva_router
+    reserva_router,
+    evaluacion_router
 )
 
 @asynccontextmanager
@@ -67,3 +68,4 @@ app.include_router(mantenimiento_router.router, prefix="/api/v1/mantenimiento", 
 app.include_router(disciplina_router.router, prefix="/api/v1/disciplinas", tags=["Disciplinas"])
 app.include_router(sesion_router.router, prefix="/api/v1/sesiones", tags=["Sesiones"])
 app.include_router(reserva_router.router, prefix="/api/v1/reservas", tags=["Reservas"])
+app.include_router(evaluacion_router.router, prefix="/api/v1/evaluaciones", tags=["Evaluaciones"])
