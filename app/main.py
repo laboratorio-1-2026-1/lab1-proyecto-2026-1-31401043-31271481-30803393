@@ -20,7 +20,8 @@ from app.routers import (
     sesion_router,
     reserva_router,
     evaluacion_router,
-    plan_router
+    plan_router,
+    membresia_router
 )
 
 @asynccontextmanager
@@ -71,3 +72,4 @@ app.include_router(sesion_router.router, prefix="/api/v1/sesiones", tags=["Sesio
 app.include_router(reserva_router.router, prefix="/api/v1/reservas", tags=["Reservas"])
 app.include_router(evaluacion_router.router, prefix="/api/v1/evaluaciones", tags=["Evaluaciones"])
 app.include_router(plan_router.router, prefix="/api/v1/planes", tags=["Planes"])
+app.include_router(membresia_router.router, prefix="/api/v1/membresias", tags=["Membresías"])
