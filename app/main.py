@@ -17,7 +17,16 @@ from app.routers import (
     maquina_router,
     mantenimiento_router,
     disciplina_router,
-    sesion_router
+    sesion_router,
+    reserva_router,
+    evaluacion_router,
+    plan_router,
+    membresia_router,
+    pago_router,
+    acceso_router,
+    categoria_producto_router,
+    producto_router,
+    venta_router
 )
 
 @asynccontextmanager
@@ -65,3 +74,12 @@ app.include_router(maquina_router.router, prefix="/api/v1/maquinas", tags=["Máq
 app.include_router(mantenimiento_router.router, prefix="/api/v1/mantenimiento", tags=["Mantenimiento"])
 app.include_router(disciplina_router.router, prefix="/api/v1/disciplinas", tags=["Disciplinas"])
 app.include_router(sesion_router.router, prefix="/api/v1/sesiones", tags=["Sesiones"])
+app.include_router(reserva_router.router, prefix="/api/v1/reservas", tags=["Reservas"])
+app.include_router(evaluacion_router.router, prefix="/api/v1/evaluaciones", tags=["Evaluaciones"])
+app.include_router(plan_router.router, prefix="/api/v1/planes", tags=["Planes"])
+app.include_router(membresia_router.router, prefix="/api/v1/membresias", tags=["Membresías"])
+app.include_router(pago_router.router, prefix="/api/v1/pagos", tags=["Pagos"])
+app.include_router(acceso_router.router, prefix="/api/v1/accesos", tags=["Accesos"])
+app.include_router(categoria_producto_router.router, prefix="/api/v1/categoria-productos", tags=["Categoría Productos"])
+app.include_router(producto_router.router, prefix="/api/v1/productos", tags=["Productos"])
+app.include_router(venta_router.router, prefix="/api/v1/ventas", tags=["Ventas"])
