@@ -25,7 +25,8 @@ from app.routers import (
     pago_router,
     acceso_router,
     categoria_producto_router,
-    producto_router
+    producto_router,
+    venta_router
 )
 
 @asynccontextmanager
@@ -81,3 +82,4 @@ app.include_router(pago_router.router, prefix="/api/v1/pagos", tags=["Pagos"])
 app.include_router(acceso_router.router, prefix="/api/v1/accesos", tags=["Accesos"])
 app.include_router(categoria_producto_router.router, prefix="/api/v1/categoria-productos", tags=["Categoría Productos"])
 app.include_router(producto_router.router, prefix="/api/v1/productos", tags=["Productos"])
+app.include_router(venta_router.router, prefix="/api/v1/ventas", tags=["Ventas"])
