@@ -5,7 +5,7 @@ from app.database.session import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.exceptions import setup_exception_handlers 
 from app.middlewares.logging_middleware import LoggingMiddleware
-#from app.seed import init_seed_data para cuando se tengan disponibles los datos semilla
+from app.seed import init_seed_data 
 from app.routers import (
     auth_router,
     rol_router,
@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
     # Ejecutar lógica de datos semilla
     
     
-    #await init_seed_data()
+    await init_seed_data()
     
     yield
 
