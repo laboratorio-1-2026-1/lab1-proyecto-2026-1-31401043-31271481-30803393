@@ -107,7 +107,9 @@ uvicorn app.main:app --reload
 ## 🌱 Datos Semilla
 
 Al iniciar el proyecto por primera vez, se crean automáticamente:
-- 1 usuario administrador
+- **1 usuario administrador** (para acceder al sistema):
+  - **Correo / Usuario:** `admin@smartgym.com`
+  - **Contraseña:** `admin123`
 - Roles fundamentales
 - 3 categorías de máquinas y 5 máquinas de ejemplo
 - 2 planes de suscripción
