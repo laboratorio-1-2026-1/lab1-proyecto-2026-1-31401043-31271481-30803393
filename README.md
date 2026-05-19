@@ -75,6 +75,7 @@ Este proyecto está construido aprovechando el ecosistema asíncrono más modern
 
 ### Opción 1: Docker (recomendado)
 ```bash
+# Aun se  encuentra en desarrollo,opcional no disponible 
 git clone <url-del-repositorio>
 cd <nombre-del-repositorio>
 docker-compose up --build
@@ -91,6 +92,8 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -r requirements.txt
+# Configurar variables: ve a `.env.example` y sigue los pasos # para ajustar tus credenciales
+# Para correr la API con el siguiente comando 
 uvicorn app.main:app --reload
 ```
 ---
