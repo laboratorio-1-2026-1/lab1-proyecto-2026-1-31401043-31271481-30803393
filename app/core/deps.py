@@ -2,7 +2,7 @@ from typing import Annotated
 
 import jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core import security
@@ -11,9 +11,12 @@ from app.database.session import get_db
 from app.models.usuario import Usuario
 from app.models.usuario import TipoEstado as EstadoCuenta
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+security_scheme = HTTPBearer()
 
-TokenDep = Annotated[str, Depends(reusable_oauth2)]
+async def get_token_from_header(auth: HTTPAuthorizationCredentials = Depends(security_scheme)) -> str:
+    return auth.credentials
+
+TokenDep = Annotated[str, Depends(get_token_from_header)]
 SessionDep = Annotated[AsyncSession, Depends(get_db)]
 
 

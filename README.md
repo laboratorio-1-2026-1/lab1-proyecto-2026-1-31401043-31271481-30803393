@@ -101,6 +101,11 @@ uvicorn app.main:app --reload
 ## 📚 Documentación Swagger/OpenAPI
 
 - Accede a la documentación interactiva en: `http://localhost:8000/api-docs`
+- **Cómo autenticarse en Swagger:**
+  1. Genera tu token de acceso en el endpoint `/api/v1/auth/login` (puedes usar las credenciales semilla indicadas abajo).
+  2. Copia el valor de `access_token` recibido.
+  3. Haz clic en el botón **Authorize** (el candado en la esquina superior derecha de la interfaz de Swagger).
+  4. Pega el token directamente en el campo **Value** y presiona **Authorize**. Swagger agregará automáticamente el prefijo `Bearer ` a tu token en las peticiones.
 
 ---
 
