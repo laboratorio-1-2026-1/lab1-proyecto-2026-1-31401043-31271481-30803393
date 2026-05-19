@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Enum, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum, DateTime
 from sqlalchemy.orm import relationship
 from app.database.session import Base
 import enum
@@ -17,6 +17,7 @@ class SesionProgramada(Base):
     __tablename__ = "sesion_programada"
 
     id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(100), nullable=False)
     disciplina_id = Column(Integer, ForeignKey("disciplina.id"), nullable=False)
     entrenador_id = Column(Integer, ForeignKey("entrenador.id"), nullable=False)
     zona_id = Column(Integer, ForeignKey("zona_instalacion.id"), nullable=False)

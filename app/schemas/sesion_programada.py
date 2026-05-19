@@ -23,6 +23,7 @@ EstadoSesionTolerante = Annotated[TipoEstado, BeforeValidator(mapear_estado_sesi
 
 
 class SesionCreate(BaseModel):
+    nombre: str = Field(..., min_length=1, max_length=100, description="Nombre de la sesión")
     disciplina_id: int = Field(..., description="ID de la disciplina")
     entrenador_id: int = Field(..., description="ID del entrenador")
     zona_id: int = Field(..., description="ID de la zona de instalación")
@@ -82,6 +83,7 @@ class MisSesionesFilterParams:
 
 class SesionResponse(BaseModel):
     id: int
+    nombre: str
     disciplina_id: int
     entrenador_id: int
     zona_id: int
