@@ -92,7 +92,7 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -r requirements.txt
-# Configurar variables: ve a `.env.example` y sigue los pasos # para ajustar tus credenciales
+# Configurar variables: ve a `.env.example` y sigue los pasos para ajustar tus credenciales
 # Para correr la API con el siguiente comando 
 uvicorn app.main:app --reload
 ```
