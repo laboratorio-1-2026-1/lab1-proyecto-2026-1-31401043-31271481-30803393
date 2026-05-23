@@ -57,5 +57,7 @@ class EstadoUpdate(BaseModel):
 class MaquinaResponse(MaquinaBase):
     id: int
     estado_operativo: EstadoTolerante
+    nombre_categoria: Optional[str] = None
+    nombre_zona: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

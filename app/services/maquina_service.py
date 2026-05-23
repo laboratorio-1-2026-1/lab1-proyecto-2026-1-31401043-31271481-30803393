@@ -31,7 +31,8 @@ class MaquinaService:
             
         Maquina_data = schema.model_dump()
         # Crear la máquina
-        return await self.repo.create(Maquina_data)
+        db_obj = await self.repo.create(Maquina_data)
+        return await self.repo.get_by_id_with_relations(db_obj.id)
     
     async def update_maquina_estado(self, id: int, schema: EstadoUpdate) -> Maquina:
         # Verificar si la máquina existe
@@ -58,7 +59,8 @@ class MaquinaService:
             
         # Actualizar el estado operativo de la máquina
         update_data = schema.model_dump(exclude_unset=True)
-        return await self.repo.update(db_obj=maquina, obj_in_data=update_data)
+        db_obj = await self.repo.update(db_obj=maquina, obj_in_data=update_data)
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def list_maquinas(self, skip: int = 0, limit: int = 100, filters: dict = None):
         return await self.repo.get_all(skip=skip, limit=limit, filters=filters)

@@ -41,5 +41,7 @@ class MembresiaResponse(BaseModel):
     fecha_inicio: date
     fecha_fin: date
     estado: EstadoMembresiaTolerante
+    nombre_cliente: Optional[str] = None
+    nombre_plan: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

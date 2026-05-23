@@ -20,3 +20,11 @@ class EvaluacionBiometrica(Base):
     cliente = relationship("Cliente", back_populates="evaluacion_biometrica")
     entrenador = relationship("Entrenador", back_populates="evaluacion_biometrica")
 
+    @property
+    def nombre_cliente(self) -> str:
+        return f"{self.cliente.nombre} {self.cliente.apellido}" if self.cliente else ""
+
+    @property
+    def nombre_entrenador(self) -> str:
+        return f"{self.entrenador.nombre} {self.entrenador.apellido}" if self.entrenador else ""
+

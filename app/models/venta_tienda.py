@@ -28,3 +28,7 @@ class VentaTienda(Base):
     # Relaciones
     cliente = relationship("Cliente", back_populates="ventas_tienda")
     detalle_ventas = relationship("DetalleVenta", back_populates="venta_tienda")
+
+    @property
+    def nombre_cliente(self) -> str:
+        return f"{self.cliente.nombre} {self.cliente.apellido}" if self.cliente else ""

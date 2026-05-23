@@ -2,6 +2,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy import select, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.reserva import Reserva, TipoEstado as EstadoReserva
 from app.models.sesion_programada import SesionProgramada
@@ -11,6 +12,17 @@ from app.repositories.base_repository import BaseRepository
 class ReservaRepository(BaseRepository[Reserva]):
     def __init__(self, db: AsyncSession):
         super().__init__(Reserva, db)
+
+    async def get_by_id_with_relations(self, id: int) -> Optional[Reserva]:
+        result = await self.db.execute(
+            select(Reserva)
+            .options(
+                selectinload(Reserva.cliente),
+                selectinload(Reserva.sesion_programada)
+            )
+            .where(Reserva.id == id)
+        )
+        return result.scalars().first()
 
     async def get_reserva_activa_cliente_sesion(
         self, cliente_id: int, sesion_id: int
@@ -74,7 +86,10 @@ class ReservaRepository(BaseRepository[Reserva]):
         if estado_reserva is not None:
             conditions.append(Reserva.estado_reserva == estado_reserva)
 
-        query = select(Reserva)
+        query = select(Reserva).options(
+            selectinload(Reserva.cliente),
+            selectinload(Reserva.sesion_programada)
+        )
         if conditions:
             query = query.where(and_(*conditions))
 
@@ -97,7 +112,10 @@ class ReservaRepository(BaseRepository[Reserva]):
         if estado_reserva is not None:
             conditions.append(Reserva.estado_reserva == estado_reserva)
 
-        query = select(Reserva).where(and_(*conditions))
+        query = select(Reserva).options(
+            selectinload(Reserva.cliente),
+            selectinload(Reserva.sesion_programada)
+        ).where(and_(*conditions))
 
         count_query = select(func.count()).select_from(query.subquery())
         total = (await self.db.execute(count_query)).scalar_one()

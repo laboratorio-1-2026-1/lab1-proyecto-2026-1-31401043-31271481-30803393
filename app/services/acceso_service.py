@@ -40,10 +40,11 @@ class AccesoService:
                 estado_membresia = m.estado
 
         # Registrar el acceso siempre (concedido o no)
-        acceso = await self.repo.create({
+        db_obj = await self.repo.create({
             "cliente_id": cliente.id,
             "acceso_concedido": tiene_membresia_activa,
         })
+        acceso = await self.repo.get_by_id_with_relations(db_obj.id)
 
         # 4Si no tiene membresía vigente, lanzar 409 DESPUÉS de registrar el intento
         if not tiene_membresia_activa:

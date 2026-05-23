@@ -89,7 +89,8 @@ class SesionProgramadaService:
             )
 
         # Crear la sesión usando el base (una sola tabla, no requiere función especial)
-        return await self.repo.create(schema.model_dump())
+        db_obj = await self.repo.create(schema.model_dump())
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def update_sesion_estado(self, id: int, schema: SesionUpdateEstado) -> SesionProgramada:
         sesion = await self.repo.get_by_id(id)
@@ -111,7 +112,8 @@ class SesionProgramadaService:
                 error_code="TRANSICION_ESTADO_INVALIDA"
             )
 
-        return await self.repo.update(db_obj=sesion, obj_in_data=schema.model_dump(exclude_unset=True))
+        db_obj = await self.repo.update(db_obj=sesion, obj_in_data=schema.model_dump(exclude_unset=True))
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def list_sesiones(self, filtros: SesionFilterParams, skip: int, limit: int):
         return await self.repo.get_all_con_filtros(

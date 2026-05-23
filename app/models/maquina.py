@@ -29,3 +29,11 @@ class Maquina(Base):
     categoria = relationship("CategoriaMaquina", back_populates="maquina")
     zona = relationship("ZonaInstalacion", back_populates="maquina")
     ticket_mantenimiento = relationship("TicketMantenimiento", back_populates="maquina")
+
+    @property
+    def nombre_categoria(self) -> str:
+        return self.categoria.nombre_categoria if self.categoria else ""
+
+    @property
+    def nombre_zona(self) -> str:
+        return self.zona.nombre_zona if self.zona else ""

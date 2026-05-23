@@ -15,6 +15,17 @@ class VentaRepository(BaseRepository[VentaTienda]):
     def __init__(self, db: AsyncSession):
         super().__init__(VentaTienda, db)
 
+    async def get_by_id_with_relations(self, id: int) -> Optional[VentaTienda]:
+        result = await self.db.execute(
+            select(VentaTienda)
+            .options(
+                selectinload(VentaTienda.cliente),
+                selectinload(VentaTienda.detalle_ventas)
+            )
+            .where(VentaTienda.id == id)
+        )
+        return result.scalars().first()
+
     async def crear_venta_completa(
         self,
         cliente_id: int,
@@ -66,7 +77,10 @@ class VentaRepository(BaseRepository[VentaTienda]):
         #Retorna una venta con sus detalles cargados (eager loading).
         result = await self.db.execute(
             select(VentaTienda)
-            .options(selectinload(VentaTienda.detalle_ventas))
+            .options(
+                selectinload(VentaTienda.cliente),
+                selectinload(VentaTienda.detalle_ventas)
+            )
             .where(VentaTienda.id == venta_id)
         )
         return result.scalars().first()
@@ -94,7 +108,7 @@ class VentaRepository(BaseRepository[VentaTienda]):
             fin = datetime.combine(fecha_fin, time.max, tzinfo=timezone.utc)
             conditions.append(VentaTienda.fecha_venta <= fin)
 
-        query = select(VentaTienda)
+        query = select(VentaTienda).options(selectinload(VentaTienda.cliente))
         if conditions:
             query = query.where(and_(*conditions))
 

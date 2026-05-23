@@ -56,5 +56,7 @@ class EvaluacionResponse(BaseModel):
     estatura: Decimal
     porcentaje_grasa: Decimal
     observaciones: Optional[str]
+    nombre_cliente: Optional[str] = None
+    nombre_entrenador: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

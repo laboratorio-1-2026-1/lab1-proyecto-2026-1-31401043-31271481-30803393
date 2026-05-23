@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy import select, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.sesion_programada import SesionProgramada, TipoEstado
 from app.repositories.base_repository import BaseRepository
@@ -11,6 +12,18 @@ from app.repositories.base_repository import BaseRepository
 class SesionProgramadaRepository(BaseRepository[SesionProgramada]):
     def __init__(self, db: AsyncSession):
         super().__init__(SesionProgramada, db)
+
+    async def get_by_id_with_relations(self, id: int) -> Optional[SesionProgramada]:
+        result = await self.db.execute(
+            select(SesionProgramada)
+            .options(
+                selectinload(SesionProgramada.disciplina),
+                selectinload(SesionProgramada.entrenador),
+                selectinload(SesionProgramada.zona)
+            )
+            .where(SesionProgramada.id == id)
+        )
+        return result.scalars().first()
 
     # Verificaciones de solapamiento
 
@@ -84,7 +97,11 @@ class SesionProgramadaRepository(BaseRepository[SesionProgramada]):
         estado_sesion: Optional[TipoEstado] = None,
     ) -> Tuple[int, List[SesionProgramada]]:
         #Listado general con filtros por fecha exacta, disciplina, entrenador y estado.
-        query = select(SesionProgramada)
+        query = select(SesionProgramada).options(
+            selectinload(SesionProgramada.disciplina),
+            selectinload(SesionProgramada.entrenador),
+            selectinload(SesionProgramada.zona)
+        )
         conditions = []
 
         if fecha:
@@ -134,7 +151,11 @@ class SesionProgramadaRepository(BaseRepository[SesionProgramada]):
         if estado_sesion:
             conditions.append(SesionProgramada.estado_sesion == estado_sesion)
 
-        query = select(SesionProgramada).where(and_(*conditions))
+        query = select(SesionProgramada).options(
+            selectinload(SesionProgramada.disciplina),
+            selectinload(SesionProgramada.entrenador),
+            selectinload(SesionProgramada.zona)
+        ).where(and_(*conditions))
 
         count_query = select(func.count()).select_from(query.subquery())
         total = (await self.db.execute(count_query)).scalar_one()

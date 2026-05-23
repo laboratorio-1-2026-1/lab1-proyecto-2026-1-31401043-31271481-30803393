@@ -91,5 +91,8 @@ class SesionResponse(BaseModel):
     fecha_hora_fin: AwareDatetime
     cupo_maximo: int
     estado_sesion: EstadoSesionTolerante
+    nombre_disciplina: Optional[str] = None
+    nombre_entrenador: Optional[str] = None
+    nombre_zona: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

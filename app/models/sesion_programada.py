@@ -35,4 +35,16 @@ class SesionProgramada(Base):
     entrenador = relationship("Entrenador", back_populates="sesion_programada")
     zona = relationship("ZonaInstalacion", back_populates="sesion_programada")
     reserva = relationship("Reserva", back_populates="sesion_programada")
+
+    @property
+    def nombre_disciplina(self) -> str:
+        return self.disciplina.nombre_disciplina if self.disciplina else ""
+
+    @property
+    def nombre_entrenador(self) -> str:
+        return f"{self.entrenador.nombre} {self.entrenador.apellido}" if self.entrenador else ""
+
+    @property
+    def nombre_zona(self) -> str:
+        return self.zona.nombre_zona if self.zona else ""
     

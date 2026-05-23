@@ -26,3 +26,11 @@ class Reserva(Base):
     sesion_programada = relationship("SesionProgramada", back_populates="reserva")
     cliente = relationship("Cliente", back_populates="reserva")
 
+    @property
+    def nombre_cliente(self) -> str:
+        return f"{self.cliente.nombre} {self.cliente.apellido}" if self.cliente else ""
+
+    @property
+    def nombre_sesion(self) -> str:
+        return self.sesion_programada.nombre if self.sesion_programada else ""
+

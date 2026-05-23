@@ -39,5 +39,6 @@ class AccesoResponse(BaseModel):
     cliente_id: int
     fecha_hora_entrada: AwareDatetime
     acceso_concedido: bool
+    nombre_cliente: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

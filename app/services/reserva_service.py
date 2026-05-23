@@ -70,10 +70,11 @@ class ReservaService:
             )
 
         # Crear la reserva (una sola tabla → se usa el base)
-        return await self.repo.create({
+        db_obj = await self.repo.create({
             "sesion_id": schema.sesion_id,
             "cliente_id": cliente.id,
         })
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def update_reserva_estado(
         self,
@@ -113,10 +114,11 @@ class ReservaService:
                 error_code="ACCION_NO_PERMITIDA_PARA_CLIENTE"
             )
 
-        return await self.repo.update(
+        db_obj = await self.repo.update(
             db_obj=reserva,
             obj_in_data=schema.model_dump(exclude_unset=True)
         )
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def list_reservas(self, filtros: ReservaFilterParams, skip: int, limit: int):
         return await self.repo.get_all_con_filtros(

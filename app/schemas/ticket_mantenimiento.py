@@ -55,5 +55,6 @@ class TicketResponse(BaseModel):
     fecha_resolucion: Optional[AwareDatetime]
     costo_reparacion: Optional[Decimal]
     estado_ticket: TipoEstado
+    nombre_maquina: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

@@ -36,12 +36,13 @@ class TicketMantenimientoService:
             )
 
         # Operación atómica: crear ticket + poner máquina En Mantenimiento
-        return await self.repo.create_ticket_y_poner_maquina_en_mantenimiento(
+        db_obj = await self.repo.create_ticket_y_poner_maquina_en_mantenimiento(
             maquina=maquina,
             maquina_id=schema.maquina_id,
             usuario_id=usuario_id,
             descripcion=schema.descripcion,
         )
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def cerrar_ticket(self, ticket_id: int, schema: TicketResolucion) -> TicketMantenimiento:
         # Verificar que el ticket exista
@@ -63,11 +64,12 @@ class TicketMantenimientoService:
             raise NotFoundException(detail="Máquina vinculada al ticket no encontrada", error_code="MAQUINA_NOT_FOUND")
 
         # Operación atómica: cerrar ticket + reactivar máquina
-        return await self.repo.cerrar_ticket_y_reactivar_maquina(
+        db_obj = await self.repo.cerrar_ticket_y_reactivar_maquina(
             ticket=ticket,
             maquina=maquina,
             costo_reparacion=schema.costo_reparacion,
         )
+        return await self.repo.get_by_id_with_relations(db_obj.id)
     
     async def list_tickets(self, skip: int = 0, limit: int = 100, filters: dict = None):
         return await self.repo.get_all(skip=skip, limit=limit, filters=filters)

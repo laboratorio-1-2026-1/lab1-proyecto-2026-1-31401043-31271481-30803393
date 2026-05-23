@@ -15,3 +15,7 @@ class BitacoraAcceso(Base):
 
     # Relación
     cliente = relationship("Cliente", back_populates="accesos")
+
+    @property
+    def nombre_cliente(self) -> str:
+        return f"{self.cliente.nombre} {self.cliente.apellido}" if self.cliente else ""

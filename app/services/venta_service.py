@@ -58,12 +58,13 @@ class VentaService:
             })
 
         # 3. Operación atómica: cabecera + detalles + descuento de stock
-        return await self.repo.crear_venta_completa(
+        db_obj = await self.repo.crear_venta_completa(
             cliente_id=schema.cliente_id,
             metodo_pago=schema.metodo_pago,
             items=items_data,
             productos=productos_validados,
         )
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def get_venta_detallada(self, venta_id: int):
         venta = await self.repo.get_venta_con_detalles(venta_id)

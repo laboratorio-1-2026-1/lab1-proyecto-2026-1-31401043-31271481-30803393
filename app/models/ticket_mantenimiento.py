@@ -27,3 +27,7 @@ class TicketMantenimiento(Base):
     #Relaciones
     maquina = relationship("Maquina", back_populates="ticket_mantenimiento")
     usuario = relationship("Usuario", back_populates="ticket_mantenimiento")
+
+    @property
+    def nombre_maquina(self) -> str:
+        return self.maquina.identificador_interno if self.maquina else ""

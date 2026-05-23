@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.evaluacion_biometrica import EvaluacionBiometrica
 from app.repositories.base_repository import BaseRepository
@@ -11,6 +12,17 @@ from app.repositories.base_repository import BaseRepository
 class EvaluacionBiometricaRepository(BaseRepository[EvaluacionBiometrica]):
     def __init__(self, db: AsyncSession):
         super().__init__(EvaluacionBiometrica, db)
+
+    async def get_by_id_with_relations(self, id: int) -> Optional[EvaluacionBiometrica]:
+        result = await self.db.execute(
+            select(EvaluacionBiometrica)
+            .options(
+                selectinload(EvaluacionBiometrica.cliente),
+                selectinload(EvaluacionBiometrica.entrenador)
+            )
+            .where(EvaluacionBiometrica.id == id)
+        )
+        return result.scalars().first()
 
     async def get_all_con_filtros(
         self,
@@ -30,7 +42,10 @@ class EvaluacionBiometricaRepository(BaseRepository[EvaluacionBiometrica]):
         if fecha_fin is not None:
             conditions.append(EvaluacionBiometrica.fecha_evaluacion <= fecha_fin)
 
-        query = select(EvaluacionBiometrica)
+        query = select(EvaluacionBiometrica).options(
+            selectinload(EvaluacionBiometrica.cliente),
+            selectinload(EvaluacionBiometrica.entrenador)
+        )
         if conditions:
             query = query.where(and_(*conditions))
 

@@ -60,5 +60,7 @@ class ReservaResponse(BaseModel):
     cliente_id: int
     fecha_registro: AwareDatetime
     estado_reserva: EstadoReservaTolerante
+    nombre_cliente: Optional[str] = None
+    nombre_sesion: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

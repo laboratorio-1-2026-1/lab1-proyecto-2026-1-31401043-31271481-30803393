@@ -40,7 +40,8 @@ class EvaluacionBiometricaService:
         evaluacion_data = schema.model_dump()
         evaluacion_data["entrenador_id"] = entrenador.id
 
-        return await self.repo.create(evaluacion_data)
+        db_obj = await self.repo.create(evaluacion_data)
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def update_evaluacion(self, id: int, schema: EvaluacionUpdate) -> EvaluacionBiometrica:
         evaluacion = await self.repo.get_by_id(id)
@@ -54,7 +55,8 @@ class EvaluacionBiometricaService:
         if not update_data:
             return evaluacion
 
-        return await self.repo.update(db_obj=evaluacion, obj_in_data=update_data)
+        db_obj = await self.repo.update(db_obj=evaluacion, obj_in_data=update_data)
+        return await self.repo.get_by_id_with_relations(db_obj.id)
 
     async def list_evaluaciones(self, filtros: EvaluacionFilterParams, skip: int, limit: int):
         return await self.repo.get_all_con_filtros(

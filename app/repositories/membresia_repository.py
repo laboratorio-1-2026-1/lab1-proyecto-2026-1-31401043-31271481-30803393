@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.membresia_cliente import EstadoMembresia, MembresiaCliente
 from app.repositories.base_repository import BaseRepository
@@ -14,6 +15,17 @@ DIAS_POR_VENCER = 7
 class MembresiaClienteRepository(BaseRepository[MembresiaCliente]):
     def __init__(self, db: AsyncSession):
         super().__init__(MembresiaCliente, db)
+
+    async def get_by_id_with_relations(self, id: int) -> Optional[MembresiaCliente]:
+        result = await self.db.execute(
+            select(MembresiaCliente)
+            .options(
+                selectinload(MembresiaCliente.cliente),
+                selectinload(MembresiaCliente.plan)
+            )
+            .where(MembresiaCliente.id == id)
+        )
+        return result.scalars().first()
 
     def calcular_estado(self, membresia: MembresiaCliente) -> EstadoMembresia:
         """
@@ -81,7 +93,10 @@ class MembresiaClienteRepository(BaseRepository[MembresiaCliente]):
         if estado is not None:
             conditions.append(MembresiaCliente.estado == estado)
 
-        query = select(MembresiaCliente)
+        query = select(MembresiaCliente).options(
+            selectinload(MembresiaCliente.cliente),
+            selectinload(MembresiaCliente.plan)
+        )
         if conditions:
             query = query.where(and_(*conditions))
 
@@ -96,6 +111,10 @@ class MembresiaClienteRepository(BaseRepository[MembresiaCliente]):
         #Retorna todas las membresías de un cliente, sincronizando sus estados.
         result = await self.db.execute(
             select(MembresiaCliente)
+            .options(
+                selectinload(MembresiaCliente.cliente),
+                selectinload(MembresiaCliente.plan)
+            )
             .where(MembresiaCliente.cliente_id == cliente_id)
             .order_by(MembresiaCliente.fecha_fin.desc())
         )

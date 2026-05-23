@@ -28,3 +28,11 @@ class MembresiaCliente(Base):
     cliente = relationship("Cliente", back_populates="membresia_cliente")
     plan = relationship("PlanSuscripcion", back_populates="membresia_cliente")
     pagos_membresia = relationship("PagoMembresia", back_populates="membresia")
+
+    @property
+    def nombre_cliente(self) -> str:
+        return f"{self.cliente.nombre} {self.cliente.apellido}" if self.cliente else ""
+
+    @property
+    def nombre_plan(self) -> str:
+        return self.plan.nombre if self.plan else ""

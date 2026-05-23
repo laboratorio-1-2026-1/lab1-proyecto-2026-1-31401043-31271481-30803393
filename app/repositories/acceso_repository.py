@@ -3,6 +3,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.bitacora_acceso import BitacoraAcceso
 from app.repositories.base_repository import BaseRepository
@@ -11,6 +12,14 @@ from app.repositories.base_repository import BaseRepository
 class AccesoRepository(BaseRepository[BitacoraAcceso]):
     def __init__(self, db: AsyncSession):
         super().__init__(BitacoraAcceso, db)
+
+    async def get_by_id_with_relations(self, id: int) -> Optional[BitacoraAcceso]:
+        result = await self.db.execute(
+            select(BitacoraAcceso)
+            .options(selectinload(BitacoraAcceso.cliente))
+            .where(BitacoraAcceso.id == id)
+        )
+        return result.scalars().first()
 
     async def get_all_con_filtros(
         self,
@@ -38,7 +47,7 @@ class AccesoRepository(BaseRepository[BitacoraAcceso]):
             fin = datetime.combine(fecha_fin, time.max, tzinfo=timezone.utc)
             conditions.append(BitacoraAcceso.fecha_hora_entrada <= fin)
 
-        query = select(BitacoraAcceso)
+        query = select(BitacoraAcceso).options(selectinload(BitacoraAcceso.cliente))
         if conditions:
             query = query.where(and_(*conditions))
 

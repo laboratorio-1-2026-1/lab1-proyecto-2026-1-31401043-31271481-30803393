@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
-from sqlalchemy import select
+from typing import List, Optional, Tuple
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.maquina import Maquina, TipoEstadoMaquina
 from app.models.ticket_mantenimiento import TicketMantenimiento, TipoEstado
@@ -10,6 +12,34 @@ from app.repositories.base_repository import BaseRepository
 class TicketMantenimientoRepository(BaseRepository[TicketMantenimiento]):
     def __init__(self, db: AsyncSession):
         super().__init__(TicketMantenimiento, db)
+
+    async def get_by_id_with_relations(self, id: int) -> Optional[TicketMantenimiento]:
+        result = await self.db.execute(
+            select(TicketMantenimiento)
+            .options(selectinload(TicketMantenimiento.maquina))
+            .where(TicketMantenimiento.id == id)
+        )
+        return result.scalars().first()
+
+    async def get_all(self, skip: int = 0, limit: int = 100, filters: Optional[dict] = None) -> Tuple[int, List[TicketMantenimiento]]:
+        query = select(TicketMantenimiento).options(
+            selectinload(TicketMantenimiento.maquina)
+        )
+        if filters:
+            for key, value in filters.items():
+                if value is not None and hasattr(TicketMantenimiento, key):
+                    if isinstance(value, str):
+                        query = query.where(getattr(TicketMantenimiento, key).ilike(f"%{value}%"))
+                    else:
+                        query = query.where(getattr(TicketMantenimiento, key) == value)
+
+        count_query = select(func.count()).select_from(query.subquery())
+        count_result = await self.db.execute(count_query)
+        total = count_result.scalar_one()
+
+        query = query.offset(skip).limit(limit)
+        results = await self.db.execute(query)
+        return total, list(results.scalars().all())
 
     async def get_ticket_abierto_por_maquina(self, maquina_id: int) -> TicketMantenimiento | None:
         #Devuelve el ticket Abierto activo de una máquina, si existe

@@ -70,6 +70,7 @@ class VentaResponse(BaseModel):
     fecha_venta: AwareDatetime
     total_venta: Decimal
     metodo_pago: MetodoPagoTolerante
+    nombre_cliente: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
