@@ -1,6 +1,23 @@
-# Ignora las librerias instaladas
+# Ignora las librerías instaladas
 .venv/
-# Ignora los __pycache__ que se crean 
+
+# Ignora los __pycache__ que se crean
 **/__pycache__/
-# Evita que las variables de entorno sean publicas
-*.env
+
+# ==============================================================================
+# Variables de entorno - NUNCA subir archivos con credenciales reales
+# ==============================================================================
+# Bloquea cualquier archivo .env (con credenciales reales)
+.env
+.env.local
+.env.*.local
+
+# Permite que los archivos de ejemplo (plantillas) SÍ se suban al repo
+!.env.example.local
+!.env.example.docker
+
+# ==============================================================================
+# Docker
+# ==============================================================================
+# Ignora archivos de override locales de Docker Compose
+docker-compose.override.yml
