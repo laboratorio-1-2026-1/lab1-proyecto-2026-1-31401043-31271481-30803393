@@ -290,7 +290,7 @@ uvicorn app.main:app --reload
 
 La documentación interactiva es generada automáticamente desde el código. Accede en:
 
-🔗 **`http://localhost:8000/zdocs`**
+🔗 **`http://localhost:8000/docs`**
 
 ### 🔑 Cómo autenticarse en Swagger
 
