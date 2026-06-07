@@ -103,7 +103,7 @@ async def update_reserva_estado(
     """
     Modifica el estado de una reserva.
     - Cliente: solo puede Cancelar su reserva.
-    - Entrenador / Administración: pueden marcar como 'Asistio' o Cancelar.
+    - Entrenador / Administración: pueden marcar como 'Asistio', 'No Asistio' o Cancelar.
     - Rol Requerido: Cliente / Entrenador / Administración.
     """
     rol_usuario = current_user.rol.nombre if current_user.rol else ""

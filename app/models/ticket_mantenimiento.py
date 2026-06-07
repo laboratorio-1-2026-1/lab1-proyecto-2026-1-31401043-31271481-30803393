@@ -5,7 +5,6 @@ from app.database.session import Base
 
 class TipoEstado(enum.Enum):
     abierto = "Abierto"
-    en_progreso = "En Progreso"
     cerrado = "Cerrado"
 
 class TicketMantenimiento(Base):

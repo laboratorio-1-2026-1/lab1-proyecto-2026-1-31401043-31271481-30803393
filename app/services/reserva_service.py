@@ -1,9 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import AppException, BusinessRuleException, NotFoundException
+from app.models.membresia_cliente import EstadoMembresia
 from app.models.reserva import Reserva, TipoEstado as EstadoReserva
 from app.models.sesion_programada import TipoEstado as EstadoSesion
 from app.repositories.cliente_repository import ClienteRepository
+from app.repositories.membresia_repository import MembresiaClienteRepository
 from app.repositories.reserva_repository import ReservaRepository
 from app.repositories.sesion_programada_repository import SesionProgramadaRepository
 from app.schemas.reserva import MisReservasFilterParams, ReservaCreate, ReservaFilterParams, ReservaUpdateEstado
@@ -14,6 +16,7 @@ class ReservaService:
         self.repo = ReservaRepository(db)
         self.sesion_repo = SesionProgramadaRepository(db)
         self.cliente_repo = ClienteRepository(db)
+        self.membresia_repo = MembresiaClienteRepository(db)
 
     async def create_reserva(self, schema: ReservaCreate, usuario_id: int) -> Reserva:
         # Resolver el cliente vinculado al usuario del token
@@ -45,6 +48,18 @@ class ReservaService:
                 detail="Ya tienes una reserva confirmada para esta sesión",
                 error_code="RESERVA_DUPLICADA",
                 status_code=409
+            )
+
+        # Verificar que el cliente tenga una membresía activa o por vencer
+        membresias = await self.membresia_repo.get_by_cliente_id(cliente.id)
+        membresia_valida = any(
+            m.estado in (EstadoMembresia.activa, EstadoMembresia.por_vencer)
+            for m in membresias
+        )
+        if not membresia_valida:
+            raise BusinessRuleException(
+                detail="El cliente no tiene una membresía activa o por vencer para poder inscribirse en una sesión",
+                error_code="MEMBRESIA_NO_VALIDA"
             )
 
         # 5. Control de cupo — verificar que no se exceda el cupo_maximo (sobreventa)
@@ -101,17 +116,37 @@ class ReservaService:
                 error_code="RESERVA_YA_ASISTIDA"
             )
 
+        # Verificar que la reserva no esté ya en estado No Asistio (estado terminal)
+        if reserva.estado_reserva == EstadoReserva.no_asistio:
+            raise BusinessRuleException(
+                detail="La reserva ya fue marcada como no asistida y no puede modificarse",
+                error_code="RESERVA_YA_NO_ASISTIDA"
+            )
+
         # 4. Control de permisos por rol:
-        #    - El cliente solo puede CANCELAR su reserva, nunca marcar 'Asistio'
-        #    - Solo Administración / Entrenador pueden marcar 'Asistio'
+        #    - El cliente solo puede CANCELAR su reserva, nunca marcar 'Asistio' o 'No Asistio'
+        #    - Solo Administración / Entrenador pueden marcar 'Asistio' o 'No Asistio'
         nuevo_estado = schema.estado_reserva
         rol_upper = rol_usuario.upper() if rol_usuario else ""
         es_cliente = "CLIENTE" in rol_upper
+        es_entrenador_o_admin = "ENTRENADOR" in rol_upper or "ADMINISTRADOR" in rol_upper
 
         if es_cliente and nuevo_estado == EstadoReserva.asistio:
             raise BusinessRuleException(
                 detail="Los clientes no pueden marcar su propia asistencia",
                 error_code="ACCION_NO_PERMITIDA_PARA_CLIENTE"
+            )
+
+        if es_cliente and nuevo_estado == EstadoReserva.no_asistio:
+            raise BusinessRuleException(
+                detail="Los clientes no pueden marcar su propia inasistencia",
+                error_code="ACCION_NO_PERMITIDA_PARA_CLIENTE"
+            )
+
+        if not es_entrenador_o_admin and nuevo_estado == EstadoReserva.no_asistio:
+            raise BusinessRuleException(
+                detail="Solo Entrenadores o Administradores pueden marcar una reserva como 'No Asistio'",
+                error_code="ACCION_NO_PERMITIDA"
             )
 
         db_obj = await self.repo.update(

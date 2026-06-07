@@ -13,6 +13,9 @@ def mapear_estado_reserva(v: str) -> str:
             "cancelada": "Cancelada",
             "asistio": "Asistio",
             "asistió": "Asistio",
+            "no asistio": "No Asistio",
+            "no asistió": "No Asistio",
+            "noasistio": "No Asistio",
         }
         return mapping.get(v_lower, v.capitalize())
     return v
@@ -28,7 +31,7 @@ class ReservaCreate(BaseModel):
 
 class ReservaUpdateEstado(BaseModel):
     estado_reserva: EstadoReservaTolerante = Field(
-        ..., description="Nuevo estado de la reserva (Confirmada, Cancelada, Asistio)"
+        ..., description="Nuevo estado de la reserva (Confirmada, Cancelada, Asistio, No Asistio)"
     )
 
 

@@ -42,8 +42,20 @@ class SesionCreate(BaseModel):
     
     @model_validator(mode="after")
     def validar_rango_horario(self) -> "SesionCreate":
+        ahora_utc = datetime.now(timezone.utc)
+
+        # Validar que la fecha de inicio no sea en el pasado.
+        # Ambas fechas ya están normalizadas a UTC por el field_validator,
+        # por lo que la comparación es correcta sin importar el timezone original del usuario.
+        if self.fecha_hora_inicio <= ahora_utc:
+            raise ValueError(
+                "La fecha_hora_inicio no puede ser una fecha u hora que ya pasó. "
+                "Asegúrate de enviar una fecha futura."
+            )
+
         if self.fecha_hora_fin <= self.fecha_hora_inicio:
             raise ValueError("La fecha_hora_fin debe ser posterior a fecha_hora_inicio")
+
         return self
 
 

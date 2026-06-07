@@ -15,9 +15,6 @@ def mapear_estado_ticket(v: str) -> str:
         mapping = {
             "abierto": "Abierto",
             "Abierto": "Abierto",
-            "en progreso": "En Progreso",
-            "en Progreso": "En Progreso",
-            "En Progreso": "En Progreso",
             "cerrado": "Cerrado",
             "Cerrado": "Cerrado"     
         }
@@ -37,7 +34,7 @@ class TicketFilterParams:
     def __init__(
         self,
         maquina_id: Optional[int] = Query(None, description="Filtrar por ID de maquina"),
-        estado_ticket: Optional[EstadoSesionTolerante] = Query(None, description="Filtrar por estado"),
+        estado_ticket: Optional[EstadoSesionTolerante] = Query(None, description="Filtrar por estado (Abierto, Cerrado)"),
     ):
         self.maquina_id = maquina_id
         self.estado_ticket = estado_ticket

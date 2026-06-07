@@ -7,6 +7,7 @@ class TipoEstado(enum.Enum):
     confirmada = "Confirmada"
     cancelada = "Cancelada"
     asistio = "Asistio"
+    no_asistio = "No Asistio"
 
 
 class Reserva(Base):
